@@ -8,15 +8,19 @@
 \usepackage{pxfonts}
 
 % Packages
-\usepackage{listings}
 \usepackage{hyperref}
 \usepackage[squaren]{SIunits}
 
 \usepackage{color}
 \definecolor{ltblue}{rgb}{0.9, 0.9, 1.0}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{dkgreen}{rgb}{0.0, 0.6, 0.0}
+\definecolor{gray}{rgb}{0.5, 0.5, 0.5}
+\definecolor{mauve}{rgb}{0.58, 0.0, 0.82}
+
+% Solarized colors
+\definecolor{base03}{rgb}{0.0, 0.17, 0.21}
+\definecolor{base01}{rgb}{0.35, 0.43, 0.46}
+\definecolor{base0}{rgb}{0.51, 0.58, 0.59}
 
 % Beamer configuration
 \usetheme{Frankfurt}
@@ -24,26 +28,29 @@
 % LaTeX configuration
 \graphicspath{{figures/}}
 
+% Listings settings
+\usepackage{listings}
+\lstset{
+    language=bash,
+    moredelim=[s][\color{blue}]{\$\{}{\}},
+    showspaces=false,
+    showstringspaces=false,
+    %basicstyle=\ttfamily\color{base0},
+    %backgroundcolor=\color{base03},
+    basicstyle=\ttfamily,
+    backgroundcolor=\color{ltblue},
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+}
+
 %=============================================================================%
 \title{An Introduction to MOM}
 \date{12 July 2012}
 
 %=============================================================================%
 \begin{document}
-% Listings settings
-\lstset{
-    language=bash,
-    basicstyle=\ttfamily,
-    showspaces=false,
-    showstringspaces=false,
-    backgroundcolor=\color{ltblue},
-    numberstyle=\tiny\color{gray},
-    keywordstyle=\color{blue},
-    commentstyle=\color{dkgreen},
-    stringstyle=\color{mauve}
-}
-
-%-----------------------------------------------------------------------------%
 \begin{frame}
     \titlepage
 \end{frame}
@@ -159,6 +166,26 @@ svn co https://access-svn.nci.org.au/mom4
     \end{itemize}
     
     \textit{Note: Expect changes to this in the future}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Compiling MOM}
+    
+    The repository contains scripts pre-configured for vayu:
+    \begin{lstlisting}
+# From source directory
+> cd exp
+> qsub mom4p1_solo_compile.sh
+    \end{lstlisting}
+    
+    Executable path:
+    \begin{lstlisting}
+> /short/${PROJECT}/${USER}/mom4/exec_vayu
+     /mom4p1_solo/fms_mom4p1_solo.x
+    \end{lstlisting}
+    
+    Compilation should take approximately 10 minutes. 
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -278,6 +305,47 @@ svn co https://access-svn.nci.org.au/mom4
         \item \lstinline|data_table|: Input fields and boundary conditions
         \item \lstinline|field_table|: Initial conditions, advection
             configuration
+    \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Running MOM}
+    
+    Running MOM at command line:
+    \begin{lstlisting}
+> mkdir ${firstrun}
+> cp ${myconfig}/input.nml *_table ${firstrun}
+> mkdir ${firstrun}/INPUT
+> mkdir ${firstrun}/RESTART
+# Link (or copy) grids, mosaics, data to INPUT
+> ln -s ${mydata}/*.nc ${firstrun}/INPUT
+> ./${mom_executable}
+    \end{lstlisting}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Numerical Troubleshooting}
+
+    Go over basic instabilities
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Parameterization Overview}
+
+    List the various parameterizations avaiable
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{MOM4 Coupling}
+
+    \begin{itemize}
+        \item FMS (GFDL)
+        \item OASIS (ACCESS)
+        \item SIS, CICE
     \end{itemize}
 \end{frame}
 
