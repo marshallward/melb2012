@@ -104,12 +104,31 @@
     {\tiny "NEMO Ocean Engine", Madec et al. (2012)}
 \end{frame}
 
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Alternative Ocean Models}
+    
+    \begin{itemize}
+        \item MITgcm: finite-volume, nonhydrostatic
+        \item GOLD: isopycnal
+        \item ROMS: "regional", sigma-coordinate
+        \item HYCOM: "hybrid" vertical grid ($z$-$\rho$-$\sigma$)
+    \end{itemize}
+    
+    "MOM-like" (Bryan-Cox) Ocean Models
+    \begin{itemize}
+        \item NEMO: C-grid
+        \item POP2 (part of CESM)
+        \item COCO (part of MIROC)
+    \end{itemize}
+\end{frame}
+
 %=============================================================================%
 \section{MOM4 Quick User's guide}
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Constructing a MOM4 Experiment}
-
+    
     \begin{itemize}
         \item Acquiring the source code
         \item Creating a model grid
@@ -125,7 +144,7 @@
     
     Up-to-date versions of the source code are available on a subversion (svn)
     server hosted by NCI:
-  
+    
     \begin{lstlisting}
 # Enter as one line
 svn co https://access-svn.nci.org.au/mom4
@@ -146,34 +165,120 @@ svn co https://access-svn.nci.org.au/mom4
 \begin{frame}
     \frametitle{Creating a model grid}
     
-    Ocean-only (or \textit{solo}) simulations require the following:
+    Mosaic grid generation for ocean-only (\textit{solo}) simulations:
     \begin{itemize}
         \item Vertical grid
         \item Horizontal grid
-        \item Topography
         \item Mosaic manifest file
+        \item Topography
+    \end{itemize}
+    
+    Caveats:
+    \begin{itemize}
+        \item "Supergrid" output: $N$ cells, $2N+1$ grid points
+        \item New toolset, differs from previous grid format
+        \item Mosaic is mostly finished, but still under development
     \end{itemize}
 \end{frame}
+
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Vertical Grid Generation}
-
-    From your source code directory:
+    
+    Uniform vertical grid:
     \begin{lstlisting}
+# From the source directory
 > cd src/tools/ocean_vgrid
 > make
-> # Uniform grid:
-> ./ocean_vgrid --nbnds 2 --bnds 0,4000 --nz 40
-> # Two-scale grid:
-> ./ocean_vgrid --nbnds 3 --bnds 0,300,4000 --nz 20,20
+> ./ocean_vgrid \
+     --nbnds 3 \
+     --bnds 0,4000 \
+     --nz 40
+    \end{lstlisting}
+    
+    Variable resolution:
+    \begin{lstlisting}
+> ./ocean_vgrid \
+     --nbnds 4
+     --bnds 0,100,500,4000
+     --nz 10,10,20
+    \end{lstlisting}
+\end{frame}
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Horizontal Grid Generation}
+   
+    Uniform $1^\circ$ spherical grid:
+    \begin{lstlisting}
+> cd src/tools/make_hgrid
+> make
+> ./make_hgrid \
+     --grid_type regular_lonlat_grid \
+     --nxbnd 2 \
+     --nybnd 2 \
+     --xbnd 0,40 \
+     --ybnd -80,80 \
+     --nlon 40 \
+     --nlat 160
+    \end{lstlisting}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Mosaic manifest file}
+    
+    \textit{Mosaic} files contain metadata to grid files:
+    \begin{lstlisting}
+> cd src/tools/make_solo_mosaic
+> make
+> ./make_solo_mosaic \
+     --num_tiles 1 \
+     --dir . \
+     --periodx 40
+    \end{lstlisting}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Topography generation}
+   
+    Idealised flat-bottom topography
+    \begin{lstlisting}
+> cd src/tools/make_topog
+> make
+> ./make_topog \
+     --mosaic solo_mosaic.nc \
+     --topog_type rectangular_basin \
+     --basin_depth 4000
     \end{lstlisting}
 
-    Output is \textit{supergrid} (edges + faces)
-    
-    $N$ cells = $2N + 1$ grid points
+    Note: For the parallel MPI version, use
+    \begin{lstlisting}
+> make -f Makefile_mpi
+    \end{lstlisting}
+\end{frame}
 
-    
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Interpolated Topography}
 
+    Interpolated from observations:
+    \lstinputlisting{scripts/interp_topog.sh}
+
+\end{frame}
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Model Configuration}
+    
+    Main configuration files:
+    \begin{itemize}
+        \item \lstinline|input.nml|: Most configuration settings (Fortran
+            namelist)
+        \item \lstinline|diag_table|: Diagnostic output
+        \item \lstinline|data_table|: Input fields and boundary conditions
+        \item \lstinline|field_table|: Initial conditions, advection
+            configuration
+    \end{itemize}
 \end{frame}
 
 %=============================================================================%

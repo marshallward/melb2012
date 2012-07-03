@@ -3,6 +3,8 @@
 *.nav
 *.out
 *.pdf
+!figures/*.pdf
 *.snm
+*.swp
 *.toc
 *.vrb
