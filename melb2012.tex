@@ -70,7 +70,7 @@
 		\item Modern thermodynamic support
         \item Partial grid topograpy
     \end{itemize}
-\end{frame}    
+\end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
@@ -90,13 +90,15 @@
     
     \begin{itemize}
         \item Depth coordinates $z$ (Boussinesq)
-         
+        
         \item Hydrostatic pressure coordinates $p$ (Non-Boussinesq)
         
         \item Quasi-horizontal vertical grids:
-            $z^* = H(\mathbf{x}) \left(\frac{z - \eta}{H + \eta}\right)$
+            $z^* = H(\mathbf{x}) \left(\frac{z - \eta}{H + \eta}\right)$,
+            (and $p^*$)
         
-        \item Limited support for terrain-following ($\sigma$) coordinates
+        \item Limited support for terrain-following coordinates
+            ($\sigma^{(z)}, \sigma^{(p)}$)
     \end{itemize}
 \end{frame}
 
@@ -202,7 +204,7 @@ svn co https://access-svn.nci.org.au/mom4
     
     Caveats:
     \begin{itemize}
-        \item "Supergrid" output: $N$ cells, $2N+1$ grid points
+        \item ``Supergrid'' output: $N$ cells, $2N+1$ grid points
         \item New toolset, differs from previous grid format
         \item Mosaic is mostly finished, but still under development
     \end{itemize}
@@ -215,9 +217,9 @@ svn co https://access-svn.nci.org.au/mom4
     Uniform vertical grid:
     \begin{lstlisting}
 # From the source directory
-> cd src/tools/ocean_vgrid
+> cd src/tools/make_vgrid
 > make
-> ./ocean_vgrid \
+> ./make_vgrid \
      --nbnds 3 \
      --bnds 0,4000 \
      --nz 40
@@ -225,7 +227,7 @@ svn co https://access-svn.nci.org.au/mom4
     
     Variable resolution:
     \begin{lstlisting}
-> ./ocean_vgrid \
+> ./make_vgrid \
      --nbnds 4
      --bnds 0,100,500,4000
      --nz 10,10,20
@@ -288,8 +290,8 @@ svn co https://access-svn.nci.org.au/mom4
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Interpolated Topography}
-
-    Interpolated from observations:
+    
+    Parallel job submission example:
     \lstinputlisting{scripts/interp_topog.sh}
 
 \end{frame}
@@ -297,9 +299,9 @@ svn co https://access-svn.nci.org.au/mom4
 \begin{frame}
     \frametitle{Model Configuration}
     
-    Main configuration files:
+    MOM4 configuration files:
     \begin{itemize}
-        \item \lstinline|input.nml|: Most configuration settings (Fortran
+        \item \lstinline|input.nml|: Major configuration settings (Fortran
             namelist)
         \item \lstinline|diag_table|: Diagnostic output
         \item \lstinline|data_table|: Input fields and boundary conditions
