@@ -9,7 +9,7 @@
 
 % Packages
 \usepackage{hyperref}
-\usepackage[squaren]{SIunits}
+\usepackage[textstyle, squaren]{SIunits}
 
 \usepackage{color}
 \definecolor{ltblue}{rgb}{0.9, 0.9, 1.0}
@@ -157,7 +157,7 @@
     \begin{lstlisting}
 # Enter as one line
 svn co https://access-svn.nci.org.au/mom4
-                       /branches/local_changes
+               /branches/local_changes
     \end{lstlisting}
     Contact NCI for access (IP address required)
     
@@ -295,6 +295,7 @@ svn co https://access-svn.nci.org.au/mom4
     \lstinputlisting{scripts/interp_topog.sh}
 
 \end{frame}
+
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Model Configuration}
@@ -326,24 +327,115 @@ svn co https://access-svn.nci.org.au/mom4
     \end{lstlisting}
 \end{frame}
 
+%=============================================================================%
+\section{Numerical Troubleshooting}
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Numerical Troubleshooting}
-
-    Go over basic instabilities
+    
+    \begin{itemize}
+        \item Choosing a resolution
+        \item Timestep sizes
+        \item Nonlinear instabilities
+        \item Free surface
+    \end{itemize}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
-    \frametitle{Parameterization Overview}
+    \frametitle{Scales of the Ocean}
+    
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{ocean_scales.pdf}
+    \end{center}
 
-    List the various parameterizations avaiable
+    {\tiny Adapted from Cushman-Roisin and Beckers (2011)}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{How long to compute everything?}
+    
+    Largest scale in terms of smallest:
+    \begin{itemize}
+        \item Horizontal scales: $L \sim 10^{11}$
+        \item Vertical scales: $H \sim 10^7$
+        \item Timescales: $T \sim 10^{14}$
+    \end{itemize}
+    Computations: $N = L^2 H T \sim 10^{43}$
+    
+    \vspace{10pt}
+
+    In the petaflop era ($10^{16}$ flops):
+    \begin{itemize}
+        \item $T = 10^{27}$ seconds
+    \end{itemize}
+    (
+
+\end{frame}
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Numerical fidelity}
+    
+    Modellers would like to solve equations like this:
+    $$
+    \frac{\partial \phi}{\partial t} + c \frac{\partial \phi}{\partial x} = 0
+    $$
+    but computers can only solve equations like this:
+    $$
+    \phi^{n+1}_i = \phi^n_i + c \Delta t
+        \left(\frac{\phi^n_{i+1} - \phi^n_{i}}{\Delta x_i} \right)
+    $$
+    Timestep size $\Delta t$ is a principal measure of convergence.
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Timestep Size}
+    
+    Timestep size resolves two questions:
+    \begin{itemize}
+        \item Stability: Is it the right solution?
+        \item Accuracy: What is the error? (e.g $O(\Delta t^2$?)
+    \end{itemize}
+    Climate science is focussed on \textit{stability}.
+    
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Designing a grid}
+
+    \begin{itemize}
+        \item Choose the spatial resolution $\Delta x$
+        \item Identify the physical processes
+        \item Select the $\Delta t$ which resolves them
+        \item Decrease $\Delta t$ if instabilities occur ('infinities')
+        \item Increase $\Delta t$ if no instabilities occur (to save computer
+            time)
+    \end{itemize}
+
+\end{frame}
+%=============================================================================%
+\section{Parameterization Overview}
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Parameterization Overview}
+    
+    Partial List of MOM4 Parameterizations
+    \begin{itemize}
+        \item Vertical Mixing
+        \item Mixed Layer
+        \item Bottom Boundary Layer
+        \item Neutral Physics
+        \item Submesoscale
+    \end{itemize}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{MOM4 Coupling}
-
+    
     \begin{itemize}
         \item FMS (GFDL)
         \item OASIS (ACCESS)
