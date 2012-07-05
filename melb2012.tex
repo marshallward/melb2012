@@ -346,9 +346,9 @@ svn co https://access-svn.nci.org.au/mom4
     \frametitle{Scales of the Ocean}
     
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{ocean_scales.pdf}
+        \includegraphics[width=0.75\textwidth]{ocean_scales.pdf}
     \end{center}
-
+    
     {\tiny Adapted from Cushman-Roisin and Beckers (2011)}
 \end{frame}
 
@@ -356,21 +356,42 @@ svn co https://access-svn.nci.org.au/mom4
 \begin{frame}
     \frametitle{How long to compute everything?}
     
-    Largest scale in terms of smallest:
+    Largest scales (global, millenial scale) in terms of smallest:
     \begin{itemize}
         \item Horizontal scales: $L \sim 10^{11}$
         \item Vertical scales: $H \sim 10^7$
         \item Timescales: $T \sim 10^{14}$
     \end{itemize}
-    Computations: $N = L^2 H T \sim 10^{43}$
+    Computations: $N \sim L^2 H T \sim 10^{43}$
     
     \vspace{10pt}
-
-    In the petaflop era ($10^{16}$ flops):
+    
+    In the petaflop era ($10^{16}$ flops, 10 petaflops):
     \begin{itemize}
-        \item $T = 10^{27}$ seconds
+        \item $T \sim 10^{27}$ seconds
     \end{itemize}
-    (
+    (Age of the universe: $\sim 10^{17}$ seconds)
+
+\end{frame}
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{What is a typical global simulation?}
+    
+    Current models only resolve the biggest scales:
+    \begin{itemize}
+        \item Horizontal scales: $L \sim 10^3$
+        \item Vertical scales: $H \sim 10^2$
+        \item Timescales: $T \sim 10^{8}$
+    \end{itemize}
+    Computations: $N \sim L^2 H T \sim 10^{16}$
+    
+    \vspace{10pt}
+    
+    Hardware limits lead to gigaflop speeds ($10^{10}$) per job:
+    \begin{itemize}
+        \item $T \sim 10^{6}$ seconds (or months)
+    \end{itemize}
+    (Don't take any of these numbers too seriously!)
 
 \end{frame}
 %-----------------------------------------------------------------------------%

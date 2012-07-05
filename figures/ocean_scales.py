@@ -20,7 +20,7 @@ def main():
     cm = 1e-2
     m = 100.*cm
     km = 1000.*m
-
+    
     # Data points
     proc_scales = {
             'Turbulence': ((0.5*cm, 200*cm), (0.5*second, 200.*second)),
