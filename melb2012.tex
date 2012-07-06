@@ -25,11 +25,14 @@
 
 % Beamer configuration
 \usetheme{Frankfurt}
+\AtBeginSection[]{
+    \frame<beamer>{\tableofcontents[current]}
+}
 
 % LaTeX configuration
 \graphicspath{{figures/}}
 
-% Listings settings
+% Listings configuration
 \usepackage{listings}
 \lstset{
     language=bash,
@@ -86,7 +89,7 @@
     \begin{itemize}
         \item Hydrostatic, Boussinesq
         \item Orthogonal Horizontal Grids
-        \item Generalised vertical grids: $z, p$
+        \item Generalised vertical grids
 		\item Explicit free surface
 		\item Modern thermodynamic support
         \item Partial grid topograpy
@@ -109,17 +112,18 @@
 \begin{frame}
     \frametitle{Generalised Vertical Grids}
     
+    Several vertical coordinates are supported:
     \begin{itemize}
-        \item Depth coordinates $z$ (Boussinesq)
+        \item $z$: Geopotential ($\approx$ depth, Boussinesq)
         
-        \item Hydrostatic pressure coordinates $p$ (Non-Boussinesq)
+        \item $p$: Hydrostatic pressure (Non-Boussinesq)
         
-        \item Quasi-horizontal vertical grids:
-            $z^* = H(\mathbf{x}) \left(\frac{z - \eta}{H + \eta}\right)$,
-            (and $p^*$)
-        
-        \item Limited support for terrain-following coordinates
-            ($\sigma^{(z)}, \sigma^{(p)}$)
+        \item $z^*$, $p^*$: Quasi-horizontal vertical grids:
+            $$
+            z^* = H(\mathbf{x}) \left(\frac{z - \eta}{H + \eta}\right)
+            $$
+        \item $\sigma^{(z)}, \sigma^{(p)}$: Terrain-following coordinates
+            (limited support)
     \end{itemize}
 \end{frame}
 
@@ -142,8 +146,8 @@
     \begin{itemize}
         \item MITgcm: finite-volume, nonhydrostatic
         \item GOLD: isopycnal
-        \item ROMS: "regional", sigma-coordinate
-        \item HYCOM: "hybrid" vertical grid ($z$-$\rho$-$\sigma$)
+        \item ROMS: ``regional'', sigma-coordinate
+        \item HYCOM: ``hybrid'' vertical grid ($z$-$\rho$-$\sigma$)
     \end{itemize}
     
     "MOM-like" (Bryan-Cox) Ocean Models
@@ -156,19 +160,6 @@
 
 %=============================================================================%
 \section{MOM4 Quick User's guide}
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Constructing a MOM4 Experiment}
-    
-    \begin{itemize}
-        \item Acquiring the source code
-        \item Creating a model grid
-        \item Model configuration
-        \item Compiling and running the model
-    \end{itemize}
-
-\end{frame}
-
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Acquiring the source code}
@@ -196,7 +187,7 @@ svn co https://access-svn.nci.org.au/mom4
 \begin{frame}[fragile]
     \frametitle{Compiling MOM}
     
-    The repository contains scripts pre-configured for vayu:
+    Most repositories have pre-configured build scripts for vayu:
     \begin{lstlisting}
 # From source directory
 > cd exp
@@ -348,20 +339,60 @@ svn co https://access-svn.nci.org.au/mom4
     \end{lstlisting}
 \end{frame}
 
-%=============================================================================%
-\section{Numerical Troubleshooting}
 %-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Numerical Troubleshooting}
+\begin{frame}[fragile]
+    \frametitle{Setting the run time}
     
+    \lstinputlisting[language=fortran]{scripts/run_time.nml}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Timestep configuration}
+    
+    \lstinputlisting[language=fortran]{scripts/timestep.nml}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{MOM4 Diagnostics}
+    
+    Example \lstinline|diag_table| file entry:
+    \begin{lstlisting}
+"ocean_snap", 5,"days", 1,"days", "Time"
+    \end{lstlisting}
     \begin{itemize}
-        \item Choosing a resolution
-        \item Timestep sizes
-        \item Nonlinear instabilities
-        \item Free surface
+        \item \lstinline|"ocean_snap"|: Output filename
+        \item \lstinline|1, "days"|: Output snapshot frequency
+        \item \lstinline|1, "days"|: Output units
+        \item \lstinline|"Time"|: Output time axis label
+    \end{itemize}
+    Several output files can be registered, each containing different
+    variables.
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{MOM4 Diagnostics}
+    
+    Example \lstinline|diag_table| field entry:
+    \begin{lstlisting}
+"ocean_model", "u", "u", "ocean_snap", "all",
+    .false., "none", 2
+    \end{lstlisting}
+    \begin{itemize}
+        \item \lstinline|"ocean_model"|: MOM4 module containing the variable
+        \item \lstinline|"u", "u"|: Variable name (MOM4 name, output name)
+        \item \lstinline|"ocean_snap"|: Registered output file
+        \item \lstinline|"all"|: Grid sampling rate
+        \item \lstinline|.false.|: Average between snapshots
+        \item \lstinline|"none"|: Generic option flag (rarely used)
+        \item \lstinline|2|: output data type (1: double, 2: float)
     \end{itemize}
 \end{frame}
 
+%=============================================================================%
+\section{Numerical Troubleshooting}
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Numerical fidelity}
@@ -373,7 +404,7 @@ svn co https://access-svn.nci.org.au/mom4
     but computers can only solve equations like this:
     $$
     \phi^{n+1}_i = \phi^n_i + c \Delta t
-        \left(\frac{\phi^n_{i+1} - \phi^n_{i}}{\Delta x_i} \right)
+        \left(\frac{\phi^n_{i+1} - \phi^n_{i-1}}{2\Delta x_i} \right)
     $$
     Grid sizes $\Delta x$, $\Delta t$ are the primary measures of convergence.
 \end{frame}
@@ -439,11 +470,10 @@ svn co https://access-svn.nci.org.au/mom4
     Rough guide for designing a grid:
     \begin{itemize}
         \item Choose the spatial resolution $\Delta x$
-        \item Identify the physical processes
-        \item Select the $\Delta t$ which resolves them
-        \item Decrease $\Delta t$ if instabilities occur ('infinities')
-        \item Increase $\Delta t$ if no instabilities occur (to save computer
-            time)
+        \item Identify the important physical processes
+        \item Estimate the required $\Delta t$ for stability
+        \item Apply dissipations to the smallest scales
+        \item Reduce or increase $\Delta t$ and dissipations until it runs
     \end{itemize}
 \end{frame}
 
@@ -451,10 +481,37 @@ svn co https://access-svn.nci.org.au/mom4
 \begin{frame}
     \frametitle{Friction and Turbulent Control}
     
-    \begin{itemize}
-        \item 
-    \end{itemize}
+    Laplacian (constant) friction models:
+    $$
+    F = A \nabla^2 \mathbf{u}
+    $$
+    For Smagorinsky viscosity:
+    $$
+    A = \left(\frac{C \Delta}{\pi}\right)^2 |D| + v \Delta
+    $$
+    where $\Delta$ is grid spacing and $|D|$ is strain rate
+\end{frame}
 
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Configuring Laplacian Viscosity}
+    
+    \begin{columns}
+        \column{0.67\textwidth}
+        \lstinputlisting[language=fortran]{scripts/lap_friction.nml}
+        \column{0.32\textwidth}
+        Constant:
+        
+        $A = \text{\lstinline|alap|}$
+        
+        \vspace{10pt}
+        
+        Smagorinsky:
+        
+        $C = \text{\lstinline|k_smag_iso|}$
+        
+        $v = \text{\lstinline|vel_micom_iso|}$
+    \end{columns}
 \end{frame}
 
 %=============================================================================%

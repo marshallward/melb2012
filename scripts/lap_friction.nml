@@ -1,0 +1,15 @@
+&ocean_lap_friction_nml
+  ! lap_friction_scheme='const'
+  lap_friction_scheme='general'
+/
+
+&ocean_lapcst_friction_nml
+  use_this_module=.false.
+  alap = 1e4
+/
+
+&ocean_lapgen_friction_nml
+  use_this_module=.true.
+  k_smag_iso=2.0
+  vel_micom_iso=0.005
+/

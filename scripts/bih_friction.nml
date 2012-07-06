@@ -1,0 +1,46 @@
+ &ocean_bih_friction_nml
+	bih_friction_scheme='general'
+/
+
+ &ocean_bih_tracer_nml
+        use_this_module=.false.
+        vel_micom=0.01
+        tracer_mix_micom=.true.
+        read_diffusivity_mask=.true.
+/
+
+ &ocean_bihcst_friction_nml
+	use_this_module=.false.
+/
+
+ &ocean_bihgen_friction_nml
+	use_this_module=.true.
+	k_smag_iso=2.0
+	k_smag_aniso=0.0
+	vel_micom_iso=0.0
+	vel_micom_aniso=0.0
+	vel_micom_bottom=0.0
+	eq_vel_micom_iso=0.0
+	eq_vel_micom_aniso=0.0
+	eq_lat_micom=0.0
+	visc_crit_scale=1.0
+	equatorial_zonal=.false.
+	bottom_5point=.false.
+	ncar_boundary_scaling=.true.
+	ncar_rescale_power=2
+	ncar_vconst_4=2.e-8
+	ncar_vconst_5=5
+/
+
+ &ocean_lap_friction_nml
+	lap_friction_scheme='general'
+/
+
+ &ocean_lapcst_friction_nml
+	use_this_module=.false.
+/
+
+ &ocean_lapgen_friction_nml
+	use_this_module=.false.
+	k_smag_iso=2.0
+/

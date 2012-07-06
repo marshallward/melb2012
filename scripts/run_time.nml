@@ -1,0 +1,10 @@
+ &ocean_solo_nml
+    date_init = 1980,1,1,0,0,0
+    months   = 0
+    days     = 2
+    hours    = 0
+    minutes  = 0
+    seconds  = 0
+    calendar = 'julian'
+    dt_cpld  = 86400
+/

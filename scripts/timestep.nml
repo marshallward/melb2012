@@ -1,6 +1,6 @@
  &ocean_model_nml
     dt_ocean = 10800
-    vertical_coordinate='geopotential'
+    vertical_coordinate='zstar'
     time_tendency='twolevel'
     baroclinic_split=1
     surface_height_split=1
