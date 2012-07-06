@@ -1,0 +1,9 @@
+ &ocean_model_nml
+    dt_ocean = 10800
+    vertical_coordinate='geopotential'
+    time_tendency='twolevel'
+    baroclinic_split=1
+    surface_height_split=1
+    barotropic_split=60
+    debug=.false.
+/

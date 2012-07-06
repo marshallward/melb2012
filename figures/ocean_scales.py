@@ -23,19 +23,21 @@ def main():
     
     # Data points
     proc_scales = {
-            'Turbulence': ((0.5*cm, 200*cm), (0.5*second, 200.*second)),
-            'Internal Waves': ((100*m, 10*km), (minute, 10*hour)),
-            'Tides': ((1e3*km,1e4*km), (hour, 100*hour)),
-            'Coastal': ((km, 10*km), (1*day, 10*day)),
-            'Fronts': ((km, 20*km), (0.5*day, 20*day)),
-            'Eddies': ((5*km, 100*km), (day, 10*week)),
-            'Currents': ((50*km, 500*km), (week, season)),
-            'Gyres': ((1e3*km, 1e4*km), (10*year, 100*year))
+            'Capillary\nWaves': ((0.2*cm, 5*cm), (0.5e-2*second, 2e-1*second)),
+            'Turbulence': ((0.5*cm, 2*m), (0.5*second, 200.*second)),
+            'Sound\nWaves': ((10*m, 200*m), (0.5e-2*second, 2e-1*second)),
+            'Surface\nWaves': ((m, 50*m), (0.1*second, minute)),
+            'Internal\nWaves': ((0.1*km, 100*km), (minute, 20*hour)),
+            'Mixed Layer': ((m, 200*m), (minute, 2*hour)),
+            'Tides': ((5e2*km,5e3*km), (hour, 20*hour)),
+            'Mesoscale\nEddies': ((km, 250*km), (0.5*day, 20*week)),
+            'Wind-\nDriven': ((0.2e3*km, 10e3*km), (month, 50*year)),
+            'THC': ((500e3, 20e3*km), (20*year, 1000*year))
     }
     
     # TODO: Get from scales
     lmin, lmax = 1e-3*m, 100000*km
-    tmin, tmax = 1e-3*second, 100*year
+    tmin, tmax = 1e-3*second, 2000*year
     
     xmin, xmax = np.log10((lmin, lmax))
     ymin, ymax = np.log10((tmin, tmax))
@@ -67,7 +69,11 @@ def main():
                                 transform=ax.transAxes)
     
     for e in ell_scales:
-        ax.add_artist(ell_scales[e])
+        ell = ell_scales[e]
+        ax.add_artist(ell)
+        ell.set_facecolor(np.random.rand(3))
+        ax.text(ell.center[0], ell.center[1], e,
+                ha='center', va='center', transform=ax.transAxes)
    
     # Labels
     ax.set_title('Ocean Process Length and Time Scales')

@@ -10,6 +10,7 @@
 % Packages
 \usepackage{hyperref}
 \usepackage[textstyle, squaren]{SIunits}
+\usepackage{textpos}
 
 \usepackage{color}
 \definecolor{ltblue}{rgb}{0.9, 0.9, 1.0}
@@ -47,12 +48,32 @@
 
 %=============================================================================%
 \title{An Introduction to MOM}
+\author{Marshall Ward}
+\institute{Australian National University\\Research School of Earth Sciences}
 \date{12 July 2012}
 
 %=============================================================================%
 \begin{document}
 \begin{frame}
     \titlepage
+    % Place logos
+    \begin{textblock*}{0.5\textwidth}(-0.05\textwidth, -0.81\textheight)
+        \includegraphics[width=\textwidth]{coecms_logo.pdf}
+    \end{textblock*}
+    \begin{textblock*}{0.15\textwidth}(0.88\textwidth, -0.81\textheight)
+        \includegraphics[width=\textwidth]{arc_logo.pdf}
+    \end{textblock*}
+    \begin{textblock*}{\textwidth}(0\textwidth, 0.02\textheight)
+        \includegraphics[height=0.063\textheight]{anu_logo.pdf}
+        \hspace{0.02\textwidth}
+        \includegraphics[height=0.063\textheight]{monash_logo.png}
+        \hspace{0.02\textwidth}
+        \includegraphics[height=0.061\textheight]{umelb_logo.png}
+        \hspace{0.02\textwidth}
+        \includegraphics[height=0.061\textheight]{unsw_logo.jpg}
+        \hspace{0.02\textwidth}
+        \includegraphics[height=0.061\textheight]{utas_logo.jpg}
+    \end{textblock*}
 \end{frame}
 
 %=============================================================================%
@@ -117,6 +138,7 @@
 \begin{frame}
     \frametitle{Alternative Ocean Models}
     
+    Qualitatively different models
     \begin{itemize}
         \item MITgcm: finite-volume, nonhydrostatic
         \item GOLD: isopycnal
@@ -228,8 +250,8 @@ svn co https://access-svn.nci.org.au/mom4
     Variable resolution:
     \begin{lstlisting}
 > ./make_vgrid \
-     --nbnds 4
-     --bnds 0,100,500,4000
+     --nbnds 4 \
+     --bnds 0,100,500,4000 \
      --nz 10,10,20
     \end{lstlisting}
 \end{frame}
@@ -293,7 +315,6 @@ svn co https://access-svn.nci.org.au/mom4
     
     Parallel job submission example:
     \lstinputlisting{scripts/interp_topog.sh}
-
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -343,13 +364,30 @@ svn co https://access-svn.nci.org.au/mom4
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
+    \frametitle{Numerical fidelity}
+    
+    Modellers would like to solve equations like this:
+    $$
+    \frac{\partial \phi}{\partial t} + c \frac{\partial \phi}{\partial x} = 0
+    $$
+    but computers can only solve equations like this:
+    $$
+    \phi^{n+1}_i = \phi^n_i + c \Delta t
+        \left(\frac{\phi^n_{i+1} - \phi^n_{i}}{\Delta x_i} \right)
+    $$
+    Grid sizes $\Delta x$, $\Delta t$ are the primary measures of convergence.
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
     \frametitle{Scales of the Ocean}
     
     \begin{center}
         \includegraphics[width=0.75\textwidth]{ocean_scales.pdf}
     \end{center}
     
-    {\tiny Adapted from Cushman-Roisin and Beckers (2011)}
+    {\tiny Adapted from:\\
+        Cushman-Roisin, Beckers (2011), Talley, Pickard, Emery, Swift (2011)}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -371,11 +409,11 @@ svn co https://access-svn.nci.org.au/mom4
         \item $T \sim 10^{27}$ seconds
     \end{itemize}
     (Age of the universe: $\sim 10^{17}$ seconds)
-
 \end{frame}
+
 %-----------------------------------------------------------------------------%
 \begin{frame}
-    \frametitle{What is a typical global simulation?}
+    \frametitle{More typical computation numbers}
     
     Current models only resolve the biggest scales:
     \begin{itemize}
@@ -392,41 +430,13 @@ svn co https://access-svn.nci.org.au/mom4
         \item $T \sim 10^{6}$ seconds (or months)
     \end{itemize}
     (Don't take any of these numbers too seriously!)
-
-\end{frame}
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Numerical fidelity}
-    
-    Modellers would like to solve equations like this:
-    $$
-    \frac{\partial \phi}{\partial t} + c \frac{\partial \phi}{\partial x} = 0
-    $$
-    but computers can only solve equations like this:
-    $$
-    \phi^{n+1}_i = \phi^n_i + c \Delta t
-        \left(\frac{\phi^n_{i+1} - \phi^n_{i}}{\Delta x_i} \right)
-    $$
-    Timestep size $\Delta t$ is a principal measure of convergence.
-\end{frame}
-
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Timestep Size}
-    
-    Timestep size resolves two questions:
-    \begin{itemize}
-        \item Stability: Is it the right solution?
-        \item Accuracy: What is the error? (e.g $O(\Delta t^2$?)
-    \end{itemize}
-    Climate science is focussed on \textit{stability}.
-    
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Designing a grid}
-
+    
+    Rough guide for designing a grid:
     \begin{itemize}
         \item Choose the spatial resolution $\Delta x$
         \item Identify the physical processes
@@ -435,8 +445,18 @@ svn co https://access-svn.nci.org.au/mom4
         \item Increase $\Delta t$ if no instabilities occur (to save computer
             time)
     \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Friction and Turbulent Control}
+    
+    \begin{itemize}
+        \item 
+    \end{itemize}
 
 \end{frame}
+
 %=============================================================================%
 \section{Parameterization Overview}
 %-----------------------------------------------------------------------------%
