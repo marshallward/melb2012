@@ -2,7 +2,7 @@
 %     Location: CoE CMS Winter School, 12 July 2012
 %       Author: Marshall Ward
 %-----------------------------------------------------------------------------%
-\documentclass[red]{beamer}
+\documentclass{beamer}
 
 % Font configuration
 \usepackage{pxfonts}
@@ -84,9 +84,20 @@
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
-    \frametitle{MOM Summary}
+    \frametitle{MOM: The Modular Ocean Model}
 
-    Summarise MOM4 here (GFDL model, griffies, etc.)
+    \begin{columns}
+        \column{0.65\textwidth}
+        \includegraphics[width=\textwidth]{hires_indian_sst.jpg}
+        \column{0.35\textwidth}
+        \begin{itemize}
+            \item GFDL Ocean Climate Model (Princeton, USA)
+            \item Nearly 50-year development history
+            \item Maintainer: Stephen Griffies
+        \end{itemize}
+    \end{columns}
+    \vspace{10pt}
+    {\tiny \lstinline|http://www.gfdl.noaa.gov/pix/tools_and_data/fms/hires_indian_sst.jpg|}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -176,7 +187,7 @@
     \begin{description}
         \item[MITgcm] nonhydrostatic, finite volume
         \item[GOLD] isopycnal ($\rho$ vertical grid)
-        \item[ROMS] ``regional'', $\sigma$
+        \item[ROMS] ``regional'' ($\sigma$ vertical grid)
         \item[HYCOM] ``hybrid'' vertical grid ($z$-$\rho$-$\sigma$)
     \end{description}
     
@@ -202,24 +213,36 @@
 svn co https://access-svn.nci.org.au/mom4
                /branches/local_changes
     \end{lstlisting}
-    Contact \lstinline|climate_help@nf.nci.org.au| for access.
+    For access: \lstinline|climate_help@nf.nci.org.au|
     
-    \textit{IP address required}
+    \textit{IP address required} 
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Source Code Versions}
     
+    Major source code branches:
     \begin{description}
-        \item[\ttfamily{mom4/trunk}] GFDL code release mirror
-        \item[\ttfamily{local\_changes}] Stable release on vayu
-        \item[\ttfamily{future\_local\_changes}] Experimental release on vayu
+        \item[\ttfamily{mom4/trunk}] GFDL code release mirror\\
+                                     Unconfigured for NCI\\
+                                     \textit{MOM4.1 (Dec 2009)}
+        \item[\ttfamily{local\_changes}] Stable release on vayu\\
+                                         Pre-configured for NCI\\
+                                         \textit{MOM4.1 (Dec 2009)}
+        \item[\ttfamily{future\_local\_changes}] Experimental release on vayu\\
+                                                 Pre-configured for NCI\\
+                                                 \textit{MOM4.2 Beta}
     \end{description}
-    
-    \textit{May be restructured in the future}
+
+    \textit{Note: This format may change in the future}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{MOM4 Library Dependencies}
 
-    The following libraries are required for most tasks:
+    The following libraries and applications are recommended:
     \begin{description}
         \item[\ttfamily{pbs}] Queueing system (usually included)
         \item[\ttfamily{intel-fc}] Intel Fortran Compiler
@@ -229,6 +252,7 @@ svn co https://access-svn.nci.org.au/mom4
         \item[\ttfamily{hdf5}] File I/O backend
         \item[\ttfamily{netcdf}] File I/O API \\
             (For MOM4.2, use \ttfamily{netcdf/4.1.2})
+        \item[\ttfamily{ncview}] Simple netCDF4 data viewer
     \end{description}
 \end{frame}
 
@@ -443,13 +467,15 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
    
     \lstinline|input.nml|:
     \lstinputlisting[language=fortran]{scripts/timestep.nml}
+    60 free surface (\textit{barotropic}) timesteps for each model
+    (\textit{baroclinic}) timestep
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{MOM4 Diagnostics}
     
-    Example \lstinline|diag_table| file entry:
+    \lstinline|diag_table| file record:
     \begin{lstlisting}
 "ocean_snap", 5,"days", 1,"days", "Time"
     \end{lstlisting}
@@ -467,7 +493,7 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
 \begin{frame}[fragile]
     \frametitle{MOM4 Diagnostics}
     
-    Example \lstinline|diag_table| field entry:
+    \lstinline|diag_table| field record:
     \begin{lstlisting}
 "ocean_model", "u", "u", "ocean_snap", "all",
     .false., "none", 2
@@ -486,8 +512,14 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Pre-configured MOM4 Runs}
-   
-    Ocean-only experiments
+    
+    Available at
+    {\small
+    \lstinline|ftp://ftp.gfdl.noaa.gov/perm/MOM4/mom4p1_pubrel_dec2009/exp/|}
+    
+    \vspace{10pt}
+
+    Ocean-only experiments:
     \begin{description}
         \item[\ttfamily{torus1}] Tracer advection test
         \item[\ttfamily{symmetric\_box1}] Re-entrant channel, symmetric winds
@@ -497,25 +529,18 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
         \item[\ttfamily{iom1}] Indian Ocean model
     \end{description}
     
-    Coupled experiments
+    Coupled experiments:
     \begin{description}
         \item[\ttfamily{om3core3}] Global ocean model
         \item[\ttfamily{CM2.1p1}] Global CMIP output
     \end{description}
-    
-    \href{ftp://ftp.gfdl.noaa.gov/perm/MOM4/mom4p1_pubrel_dec2009/exp/}
-    {Experiments can be downloaded here:}
-    \begin{lstlisting}
-ftp://ftp.gfdl.noaa.gov/perm/MOM4
-      /mom4p1_pubrel_dec2009/exp/
-    \end{lstlisting}
 \end{frame}
 
 %=============================================================================%
-\section{Numerical Troubleshooting}
+\section{Numerical Grid Design}
 %-----------------------------------------------------------------------------%
 \begin{frame}
-    \frametitle{Numerical fidelity}
+    \frametitle{Numerical Fidelity}
     
     Modellers would like to solve equations like this:
     $$
@@ -597,6 +622,36 @@ ftp://ftp.gfdl.noaa.gov/perm/MOM4
     \end{itemize}
 \end{frame}
 
+%=============================================================================%
+\section{Parameterization Overview}
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Parameterization Overview}
+    
+    Partial List of MOM4 Parameterizations
+    \begin{itemize}
+        \item Vertical Mixing
+        \item Mixed Layer
+        \item Bottom Boundary Layer
+        \item Neutral Physics
+        \item Submesoscale
+    \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Turbulent Cascading}
+
+    Explain the pumping of energy to smaller scales
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Laplacian and Biharmonic Viscosities}
+
+    Illustrate scale-selective dissipation viscosities
+\end{frame}
+
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Friction and Turbulent Control}
@@ -635,21 +690,7 @@ ftp://ftp.gfdl.noaa.gov/perm/MOM4
 \end{frame}
 
 %=============================================================================%
-\section{Parameterization Overview}
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Parameterization Overview}
-    
-    Partial List of MOM4 Parameterizations
-    \begin{itemize}
-        \item Vertical Mixing
-        \item Mixed Layer
-        \item Bottom Boundary Layer
-        \item Neutral Physics
-        \item Submesoscale
-    \end{itemize}
-\end{frame}
-
+\section{Coupling}
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{MOM4 Coupling}
