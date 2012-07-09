@@ -36,7 +36,7 @@
 \usepackage{listings}
 \lstset{
     language=bash,
-    moredelim=[s][\color{blue}]{\$\{}{\}},
+    moredelim=[s][\color{mauve}]{\$\{}{\}},
     showspaces=false,
     showstringspaces=false,
     %basicstyle=\ttfamily\color{base0},
@@ -84,6 +84,13 @@
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
+    \frametitle{MOM Summary}
+
+    Summarise MOM4 here (GFDL model, griffies, etc.)
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
     \frametitle{MOM4 Dynamic Core}
     
     \begin{itemize}
@@ -104,8 +111,28 @@
         \includegraphics<1>[width=0.7\textwidth]{merc_tripolar.pdf}
         \includegraphics<2>[width=0.5\textwidth]{nh_tripolar.pdf}
         \includegraphics<2>[width=0.5\textwidth]{sh_tripolar.pdf}
-        \includegraphics<3>[width=0.7\textwidth]{merc_auscom.pdf}
+        %\includegraphics<3>[width=0.7\textwidth]{merc_auscom.pdf}
     \end{center}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{MOM4 grid layout}
+
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{center}
+            \includegraphics[width=\textwidth]{b_grid.pdf}
+        \end{center}
+        \column{0.5\textwidth}
+        \begin{itemize}
+            \item Arakawa ``B-grid''
+            \item Tracers ($\rho$, $T$, $S$, etc.) on cell centres
+            \item Velocities ($u$, $v$) on cell corners
+            \item ``Supergrids'' are half-$\Delta$ resolution
+        \end{itemize}
+    \end{columns}
+    {\tiny Rajpoot, Bhaumik, Sengupta (2011)}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -113,18 +140,21 @@
     \frametitle{Generalised Vertical Grids}
     
     Several vertical coordinates are supported:
-    \begin{itemize}
-        \item $z$: Geopotential ($\approx$ depth, Boussinesq)
+    \begin{description}
+        \item[$z$] Geopotential ($\approx$ depth, Boussinesq)
         
-        \item $p$: Hydrostatic pressure (Non-Boussinesq)
+        \item[$p$] Hydrostatic pressure (Non-Boussinesq)
         
-        \item $z^*$, $p^*$: Quasi-horizontal vertical grids:
+        \item[$z^*$, $p^*$] Quasi-horizontal vertical grids
             $$
             z^* = H(\mathbf{x}) \left(\frac{z - \eta}{H + \eta}\right)
             $$
-        \item $\sigma^{(z)}, \sigma^{(p)}$: Terrain-following coordinates
-            (limited support)
-    \end{itemize}
+        \item[$\sigma^{(z)}, \sigma^{(p)}$] Terrain-following coordinates
+            $$
+            \sigma^{(z)} = \frac{z - \eta}{H + \eta}
+            $$
+            ($\sigma$ not recommended for complex flows)
+    \end{description}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -143,19 +173,19 @@
     \frametitle{Alternative Ocean Models}
     
     Qualitatively different models
-    \begin{itemize}
-        \item MITgcm: finite-volume, nonhydrostatic
-        \item GOLD: isopycnal
-        \item ROMS: ``regional'', sigma-coordinate
-        \item HYCOM: ``hybrid'' vertical grid ($z$-$\rho$-$\sigma$)
-    \end{itemize}
+    \begin{description}
+        \item[MITgcm] nonhydrostatic, finite volume
+        \item[GOLD] isopycnal ($\rho$ vertical grid)
+        \item[ROMS] ``regional'', $\sigma$
+        \item[HYCOM] ``hybrid'' vertical grid ($z$-$\rho$-$\sigma$)
+    \end{description}
     
     "MOM-like" (Bryan-Cox) Ocean Models
-    \begin{itemize}
-        \item NEMO: C-grid
-        \item POP2 (part of CESM)
-        \item COCO (part of MIROC)
-    \end{itemize}
+    \begin{description}
+        \item[NEMO] C-grid
+        \item[POP2] (part of CESM)
+        \item[COCO] (part of MIROC)
+    \end{description}
 \end{frame}
 
 %=============================================================================%
@@ -172,15 +202,54 @@
 svn co https://access-svn.nci.org.au/mom4
                /branches/local_changes
     \end{lstlisting}
-    Contact NCI for access (IP address required)
+    Contact \lstinline|climate_help@nf.nci.org.au| for access.
     
-    \begin{itemize}
-        \item \lstinline|mom4/trunk|: GFDL code release mirror
-        \item \lstinline|local_changes|: Stable release on vayu
-        \item \lstinline|future_local_changes|: Experimental release on vayu
-    \end{itemize}
+    \textit{IP address required}
     
-    \textit{Note: Expect changes to this in the future}
+    \begin{description}
+        \item[\ttfamily{mom4/trunk}] GFDL code release mirror
+        \item[\ttfamily{local\_changes}] Stable release on vayu
+        \item[\ttfamily{future\_local\_changes}] Experimental release on vayu
+    \end{description}
+    
+    \textit{May be restructured in the future}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{MOM4 Library Dependencies}
+
+    The following libraries are required for most tasks:
+    \begin{description}
+        \item[\ttfamily{pbs}] Queueing system (usually included)
+        \item[\ttfamily{intel-fc}] Intel Fortran Compiler
+        \item[\ttfamily{intel-cc}] Intel C Compiler
+        \item[\ttfamily{intel-mkl}] Intel Math Libraries
+        \item[\ttfamily{openmpi}] MPI Parallelisation
+        \item[\ttfamily{hdf5}] File I/O backend
+        \item[\ttfamily{netcdf}] File I/O API \\
+            (For MOM4.2, use \ttfamily{netcdf/4.1.2})
+    \end{description}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{MOM4 Library Dependencies}
+    
+    On NCI machines, use environment modules:
+    \begin{lstlisting}
+> module load intel-fc
+> module load netcdf/4.1.2
+# etc...
+    \end{lstlisting}
+    Most scripts handle this automatically, but occasionally you must do it
+    manually. 
+
+    \vspace{10pt}
+
+    To automatically import at login, add the commands to your
+    \lstinline|.login| file (or \lstinline|.profile| if using
+    \lstinline|bash|).
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -194,7 +263,7 @@ svn co https://access-svn.nci.org.au/mom4
 > qsub mom4p1_solo_compile.sh
     \end{lstlisting}
     
-    Executable path:
+    Default executable path:
     \begin{lstlisting}
 > /short/${PROJECT}/${USER}/mom4/exec_vayu
      /mom4p1_solo/fms_mom4p1_solo.x
@@ -313,43 +382,66 @@ svn co https://access-svn.nci.org.au/mom4
     \frametitle{Model Configuration}
     
     MOM4 configuration files:
-    \begin{itemize}
-        \item \lstinline|input.nml|: Major configuration settings (Fortran
+    \begin{description}
+        \item[\ttfamily{input.nml}] Major configuration settings (Fortran
             namelist)
-        \item \lstinline|diag_table|: Diagnostic output
-        \item \lstinline|data_table|: Input fields and boundary conditions
-        \item \lstinline|field_table|: Initial conditions, advection
+        \item[\ttfamily{diag\_table}] Diagnostic output
+        \item[\ttfamily{data\_table}] Input fields and boundary conditions
+        \item[\ttfamily{field\_table}] Initial conditions, advection
             configuration
-    \end{itemize}
+    \end{description}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Running MOM}
     
-    Running MOM at command line:
+    To run MOM from the terminal:
     \begin{lstlisting}
-> mkdir ${firstrun}
-> cp ${myconfig}/input.nml *_table ${firstrun}
-> mkdir ${firstrun}/INPUT
-> mkdir ${firstrun}/RESTART
+> mkdir ${expt}
+> cp ${myconfig}/input.nml ${expt}
+> cp ${myconfig}/*_table ${expt}
+> mkdir ${expt}/INPUT
+> mkdir ${expt}/RESTART
 # Link (or copy) grids, mosaics, data to INPUT
-> ln -s ${mydata}/*.nc ${firstrun}/INPUT
+> ln -s ${mydata}/*.nc ${expt}/INPUT
 > ./${mom_executable}
     \end{lstlisting}
+
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Running MOM}
+    
+    To submit MOM on vayu:
+    \begin{lstlisting}
+> cd ${mom_code}
+> mkdir work/${expt}
+> mkdir work/${expt}/INPUT
+> cp ${myconfig}/input.nml work/${expt}/INPUT
+> cp ${myconfig}/*_table work/${expt}/INPUT
+> cp ${mydata}/*.nc ${firstrun}/INPUT
+> cd exp
+> qsub mom4p1_solo_run.csh
+    \end{lstlisting}
+The script \lstinline|mom4p1_solo_run| will require further configuration.
+
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Setting the run time}
-    
+   
+    \lstinline|input.nml|:
     \lstinputlisting[language=fortran]{scripts/run_time.nml}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Timestep configuration}
-    
+   
+    \lstinline|input.nml|:
     \lstinputlisting[language=fortran]{scripts/timestep.nml}
 \end{frame}
 
@@ -389,6 +481,34 @@ svn co https://access-svn.nci.org.au/mom4
         \item \lstinline|"none"|: Generic option flag (rarely used)
         \item \lstinline|2|: output data type (1: double, 2: float)
     \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Pre-configured MOM4 Runs}
+   
+    Ocean-only experiments
+    \begin{description}
+        \item[\ttfamily{torus1}] Tracer advection test
+        \item[\ttfamily{symmetric\_box1}] Re-entrant channel, symmetric winds
+        \item[\ttfamily{box1}] Thermohaline test
+        \item[\ttfamily{gyre1}] Basin gyre test
+        \item[\ttfamily{dome1}] \textbf{DOME} overflow experiment
+        \item[\ttfamily{iom1}] Indian Ocean model
+    \end{description}
+    
+    Coupled experiments
+    \begin{description}
+        \item[\ttfamily{om3core3}] Global ocean model
+        \item[\ttfamily{CM2.1p1}] Global CMIP output
+    \end{description}
+    
+    \href{ftp://ftp.gfdl.noaa.gov/perm/MOM4/mom4p1_pubrel_dec2009/exp/}
+    {Experiments can be downloaded here:}
+    \begin{lstlisting}
+ftp://ftp.gfdl.noaa.gov/perm/MOM4
+      /mom4p1_pubrel_dec2009/exp/
+    \end{lstlisting}
 \end{frame}
 
 %=============================================================================%
