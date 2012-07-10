@@ -39,8 +39,6 @@
     moredelim=[s][\color{mauve}]{\$\{}{\}},
     showspaces=false,
     showstringspaces=false,
-    %basicstyle=\ttfamily\color{base0},
-    %backgroundcolor=\color{base03},
     basicstyle=\ttfamily,
     backgroundcolor=\color{ltblue},
     numberstyle=\tiny\color{gray},
@@ -59,7 +57,7 @@
 \begin{document}
 \begin{frame}
     \titlepage
-    % Place logos
+    % Logos
     \begin{textblock*}{0.5\textwidth}(-0.05\textwidth, -0.81\textheight)
         \includegraphics[width=\textwidth]{coecms_logo.pdf}
     \end{textblock*}
@@ -97,7 +95,8 @@
         \end{itemize}
     \end{columns}
     \vspace{10pt}
-    {\tiny \lstinline|http://www.gfdl.noaa.gov/pix/tools_and_data/fms/hires_indian_sst.jpg|}
+    {\tiny
+     \lstinline|http://www.gfdl.noaa.gov/pix/tools_and_data/fms/hires_indian_sst.jpg|}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -296,6 +295,25 @@ svn co https://access-svn.nci.org.au/mom4
 \end{frame}
 
 %-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Compiling the Coupled MOM4 (FMS)}
+    
+    Similar to ``solo'' compilation
+    \begin{lstlisting}
+# From source directory
+> cd exp
+> qsub mom4p1_coupled_compile.sh
+    \end{lstlisting}
+    
+    Default executable path:
+    \begin{lstlisting}
+> /short/${PROJECT}/${USER}/mom4/exec_vayu
+     /mom4p1_coupled/fms_mom4p1_coupled.x
+    \end{lstlisting}
+    The GFDL ice model (SIS) is embedded in the executable
+\end{frame}
+
+%-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Creating a model grid}
     
@@ -338,6 +356,7 @@ svn co https://access-svn.nci.org.au/mom4
      --nz 10,10,20
     \end{lstlisting}
 \end{frame}
+
 %-----------------------------------------------------------------------------%
 \begin{frame}[fragile]
     \frametitle{Horizontal Grid Generation}
@@ -459,6 +478,15 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
    
     \lstinline|input.nml|:
     \lstinputlisting[language=fortran]{scripts/run_time.nml}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Controlling Coupled Runs}
+
+    Replace \lstinline|ocean_solo_nml| in \lstinline|input.nml| with
+    \lstinline|coupler_nml|:
+    \lstinputlisting[language=fortran]{scripts/coupler.nml}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -738,44 +766,6 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
         \includegraphics[width=0.85\textwidth]{submesoscale.png}
     \end{center}
     {\tiny \lstinline|http://www.open-ocean.org/images/pictures/75.png|}
-\end{frame}
-
-%=============================================================================%
-\section{Coupling}
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{MOM4 Coupling}
-    
-    \begin{itemize}
-        \item FMS (GFDL)
-        \item OASIS (ACCESS)
-        \item SIS, CICE
-    \end{itemize}
-\end{frame}
-
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Ocean-Ice Coupling}
-
-\end{frame}
-
-%-----------------------------------------------------------------------------%
-\begin{frame}[fragile]
-    \frametitle{Compiling the Coupled MOM4 (FMS)}
-    
-    Similar to ``solo'' compilation
-    \begin{lstlisting}
-# From source directory
-> cd exp
-> qsub mom4p1_coupled_compile.sh
-    \end{lstlisting}
-    
-    Default executable path:
-    \begin{lstlisting}
-> /short/${PROJECT}/${USER}/mom4/exec_vayu
-     /mom4p1_coupled/fms_mom4p1_coupled.x
-    \end{lstlisting}
-    The GFDL ice model (SIS) is embedded in the executable
 \end{frame}
 
 %=============================================================================%
