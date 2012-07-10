@@ -122,7 +122,6 @@
         \includegraphics<1>[width=0.7\textwidth]{merc_tripolar.pdf}
         \includegraphics<2>[width=0.5\textwidth]{nh_tripolar.pdf}
         \includegraphics<2>[width=0.5\textwidth]{sh_tripolar.pdf}
-        %\includegraphics<3>[width=0.7\textwidth]{merc_auscom.pdf}
     \end{center}
 \end{frame}
 
@@ -431,6 +430,7 @@ svn co https://access-svn.nci.org.au/mom4
 > ln -s ${mydata}/*.nc ${expt}/INPUT
 > ./${mom_executable}
     \end{lstlisting}
+    \textit{Replace variables with your own directory paths}
 
 \end{frame}
 
@@ -505,7 +505,7 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
         \item \lstinline|"all"|: Grid sampling rate
         \item \lstinline|.false.|: Average between snapshots
         \item \lstinline|"none"|: Generic option flag (rarely used)
-        \item \lstinline|2|: output data type (1: double, 2: float)
+        \item \lstinline|2|: output data type (1=double, 2=float)
     \end{itemize}
 \end{frame}
 
@@ -610,7 +610,7 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
 
 %-----------------------------------------------------------------------------%
 \begin{frame}
-    \frametitle{Designing a grid}
+    \frametitle{Designing a Grid}
     
     Rough guide for designing a grid:
     \begin{itemize}
@@ -630,7 +630,7 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
     
     Partial List of MOM4 Parameterizations
     \begin{itemize}
-        \item Vertical Mixing
+        \item Lateral Friction
         \item Mixed Layer
         \item Bottom Boundary Layer
         \item Neutral Physics
@@ -641,15 +641,22 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
 %-----------------------------------------------------------------------------%
 \begin{frame}
     \frametitle{Turbulent Cascading}
+    
+    \begin{center}
+        \includegraphics<1>[width=0.6\textwidth]{2dturbulence.png}
+        \includegraphics<2>[width=0.65\textwidth]{kolmogorov_cascade.jpg}
+        \includegraphics<3>[width=0.9\textwidth]{hokusai_wave.jpg}
+        \includegraphics<4>[width=\textwidth]{musashi_whale.jpg}
+    \end{center}
 
-    Explain the pumping of energy to smaller scales
-\end{frame}
-
-%-----------------------------------------------------------------------------%
-\begin{frame}
-    \frametitle{Laplacian and Biharmonic Viscosities}
-
-    Illustrate scale-selective dissipation viscosities
+    \only<1>{\tiny
+    \lstinline|http://www.gfdl.noaa.gov/pix/user_images/ih/misc/turbulence.gif|}
+    \only<2>{\tiny
+    \lstinline|http://cictr.ee.psu.edu/research/pcs/turbulence.jpg|}
+    \only<3>{\tiny
+    The Great Wave off Kanagawa, Hokusai (1830's)}
+    \only<4>{\tiny
+    Miyamoto Musashi and the Whale, Kuniyoshi (1850's)}
 \end{frame}
 
 %-----------------------------------------------------------------------------%
@@ -689,6 +696,50 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
     \end{columns}
 \end{frame}
 
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Laplacian and Biharmonic Viscosities}
+    
+    $A_2 \nabla^2 \mathbf{u}$ (Laplacian) vs $A_4 \nabla^4 \mathbf{u}$
+    (biharmonic):
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{lateral_friction.pdf}
+    \end{center}
+    $A_2 = 500 \; \meter^2 \; \second^{-1}$,
+    $A_4 = 10^{10} \; \meter^4 \; \second^{-1}$
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Mixed Layer}
+    
+    Most atmosphere-ocean boundary effects are unresolved:
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{mixed_layer.pdf}
+    \end{center}
+    {\tiny Kantha and Clayson (2003)}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Neutral Physics}
+    
+    Mixing along isopycnal (\textit{neutral}) surfaces:
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{GMDiagram.pdf}
+    \end{center}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Submesoscale}
+
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{submesoscale.png}
+    \end{center}
+    {\tiny \lstinline|http://www.open-ocean.org/images/pictures/75.png|}
+\end{frame}
+
 %=============================================================================%
 \section{Coupling}
 %-----------------------------------------------------------------------------%
@@ -700,6 +751,31 @@ The script \lstinline|mom4p1_solo_run| will require further configuration.
         \item OASIS (ACCESS)
         \item SIS, CICE
     \end{itemize}
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}
+    \frametitle{Ocean-Ice Coupling}
+
+\end{frame}
+
+%-----------------------------------------------------------------------------%
+\begin{frame}[fragile]
+    \frametitle{Compiling the Coupled MOM4 (FMS)}
+    
+    Similar to ``solo'' compilation
+    \begin{lstlisting}
+# From source directory
+> cd exp
+> qsub mom4p1_coupled_compile.sh
+    \end{lstlisting}
+    
+    Default executable path:
+    \begin{lstlisting}
+> /short/${PROJECT}/${USER}/mom4/exec_vayu
+     /mom4p1_coupled/fms_mom4p1_coupled.x
+    \end{lstlisting}
+    The GFDL ice model (SIS) is embedded in the executable
 \end{frame}
 
 %=============================================================================%
